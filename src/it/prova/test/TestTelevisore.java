@@ -14,6 +14,9 @@ public class TestTelevisore {
 		TelevisoreService televisoreService = MyServiceFactory.getTelevisoreServiceImpl();
 		try {
 			
+			testGetById(televisoreService);
+			System.out.println("Report presenti:" + televisoreService.listAll().size());
+			
 			testInserisciNuovo(televisoreService);
 			System.out.println("Report presenti:" + televisoreService.listAll().size());
 			
@@ -42,6 +45,26 @@ public class TestTelevisore {
 		System.out.println("Aggiunto nuovo record");
 		System.out.println(".......testInserisciNuovo fine.............");
 	}
+	
+	public static void testGetById(TelevisoreService televisoreService) throws Exception{
+		System.out.println(".......testGetById inizio.............");
+		
+		Televisore televisoreDaPrendereConId = new Televisore("Hitachi", "KOL9", new Date());
+		televisoreService.inserisciNuovo(televisoreDaPrendereConId);
+		
+		List<Televisore> listaTv=televisoreService.listAll();
+		Long idPrimoTv = listaTv.get(0).getId();
+		
+		if(televisoreService.findById(idPrimoTv)==null) {
+			throw new RuntimeException("testGetById fallito...");
+		}
+		
+		for(Televisore item:listaTv) {
+			televisoreService.rimuovi(item);
+		}
+		System.out.println(".......testGetById fine.............");
+		
+	}
 
 	public static void testRimozione(TelevisoreService televisoreService) throws Exception {
 		System.out.println(".......testRimozione inizio.............");
@@ -66,15 +89,17 @@ public class TestTelevisore {
 		System.out.println(".......testFindByExample inizio.............");
 		
 		televisoreService.inserisciNuovo(new Televisore("Samsung", "TF5", new Date()));
-		televisoreService.inserisciNuovo(new Televisore("Akai", "AL90", new Date()));
+		televisoreService.inserisciNuovo(new Televisore("Samsung", "AL90", new Date()));
 		
 		List<Televisore> risultatifindByExample = televisoreService.findByExample(new Televisore("Samsung"));
-		if (risultatifindByExample.size()<2)
+		if (risultatifindByExample.size()!=2)
 			throw new RuntimeException("testFindByExample fallito ");
+		
 		
 		for(Televisore item:risultatifindByExample) {
 			televisoreService.rimuovi(item);
 		}
+		
 		System.out.println(".......testFindByExample fine.............");
 	}
 	
@@ -93,10 +118,13 @@ public class TestTelevisore {
 		Televisore tvDaModificare=televisoreService.findById(idTv);
 		tvDaModificare.setModello(modelloDaModificare);
 		
-		System.out.println("User candidato alla modifica: " + tvDaModificare);
+		System.out.println("Televisore candidato alla modifica: " + tvDaModificare);
 		if (televisoreService.aggiorna(tvDaModificare) != 1)
 			throw new RuntimeException("testModifica fallito ");
 		
+		for(Televisore item:risultatifindByExample) {
+			televisoreService.rimuovi(item);
+		}
 		System.out.println("Record modificato con successo");
 		System.out.println(".......testModifica fine.............");
 	}

@@ -1,5 +1,6 @@
 package it.prova.model;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class Televisore {
@@ -64,4 +65,10 @@ public class Televisore {
 		this.dataProduzione = dataProduzione;
 	}
 
+	
+	public String toString() {
+		String dateCreatedString = dataProduzione!=null?new SimpleDateFormat("dd/MM/yyyy").format(dataProduzione):" N.D.";
+		
+		return "televisore [id=" + id + ", marca=" + marca + ", modello=" + modello + ", data produzione=" + dateCreatedString + "]";
+	}
 }
